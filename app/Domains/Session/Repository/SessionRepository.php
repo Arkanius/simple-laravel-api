@@ -66,7 +66,7 @@ class SessionRepository implements RepositoryInterface
             return false;
         }
         $data['id']                = Uuid::generate();
-        $data['user_id']           = $data['id'];
+        $data['user_id']           = $data['user_id'];
         $data['token']             = str_random($this->tokenSize);
         $data['expiration_date']   = date('Y-m-d H:i:s', strtotime('+ 15 minutes'));
 

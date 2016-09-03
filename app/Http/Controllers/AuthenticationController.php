@@ -48,7 +48,7 @@ class AuthenticationController extends Controller
         }
 
         $sessionRepository = new SessionRepository();
-        $result = $sessionRepository->create(['id' => $user[0]->id]);
+        $result = $sessionRepository->create(['user_id' => $user[0]->id]);
 
         if (!empty($result)) {
             return response()->json([

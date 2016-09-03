@@ -17,12 +17,16 @@ Route::get('/', function () {
 
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::get('users', 'UserController@index');
-    Route::post('user', 'UserController@store');
+
+    Route::group(['prefix' => 'admin'], function () {
+        Route::resource('users', 'UserController');
+    });
+
+    Route::post('register', 'UserController@register');
     Route::post('authenticate', 'AuthenticationController@authenticate');
 
     Route::get('test', 'UserController@test');
-    //Route::resource('authenticate', 'AuthController', ['only' => ['index']]);
-    //Route::post('authenticate', 'AuthController@authenticate');
+
+
 
 });

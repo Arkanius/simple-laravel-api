@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Domains\User\Repository\UserRepository;
 use App\Domains\User\Service\UserService;
+use App\Domains\User\Service\IdentifyService;
 use App\Domains\Session\Service\SessionService;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,6 +28,14 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+
+        if (IdentifyService::isAdmin($request->token) === false) {
+            return response()->json([
+                'message' => $this->hasNoPermissionMessage,
+                'data'  => ''
+            ], 403);
+        }
+
         return response()->json([
             'message' => '',
             'result'  => $this->repository->findAll()
@@ -38,7 +47,7 @@ class UserController extends Controller
      *
      * @param Request $request
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name'           => 'required|max:255',
@@ -75,8 +84,18 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function test(Request $request)
+    public function update(Request $request, $id)
     {
-        return SessionService::refreshToken($request->token);
+        if (IdentifyService::isAdmin($request->token) === false) {
+            return response()->json([
+                'message' => $this->hasNoPermissionMessage,
+                'data'  => ''
+            ], 403);
+        }
+
+        if (empty($this->repository->findBy('id', $id))) {
+            return response()->json(['message' => $this->notFoundMessage, 'data' => ''], 422);
+        }
     }
+
 }

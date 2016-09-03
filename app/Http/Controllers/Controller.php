@@ -17,6 +17,8 @@ class Controller extends BaseController
     protected $internalErrorMessage      = 'An error occurred please try again later';
     protected $invalidCredentialsMessage = 'Invalid credentials';
     protected $authSuccessMessage        = 'User authenticated successfully';
+    protected $hasNoPermissionMessage    = 'You have no permission to access this action';
+    protected $notFoundMessage           = 'Resource not found';
 
 
     public function __get($prop)

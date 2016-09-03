@@ -14,4 +14,9 @@ class User extends Authenticatable
     ];
 
     protected $keyType = 'char';
+
+    public function tokens()
+    {
+        return $this->hasMany('App\Domains\Session\Model\Session');
+    }
 }
