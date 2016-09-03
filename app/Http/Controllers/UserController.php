@@ -77,7 +77,6 @@ class UserController extends Controller
 
     public function test(Request $request)
     {
-        $test = new SessionService();
-        return $test->refreshToken($request->token);
+        return SessionService::refreshToken($request->token);
     }
 }
