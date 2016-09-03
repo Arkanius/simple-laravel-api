@@ -31,7 +31,7 @@ class SessionService
 
         $sessionRepository->update(['id' => $user->id],
             [
-                'expiration_date' => date('Y-m-d H:i:s', strtotime('+ 55 minutes', date('Y-m-d H:i:s')))
+                'expiration_date' => date('Y-m-d H:i:s', strtotime('+ 15 minutes'))
             ]);
 
 
