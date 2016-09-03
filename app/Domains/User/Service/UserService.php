@@ -42,7 +42,6 @@ class UserService
             $message->from($this->emailFrom, $this->emailSender);
             $message->to($userData->email)->subject($this->emailSubject);
         });
-
-
     }
+
 }

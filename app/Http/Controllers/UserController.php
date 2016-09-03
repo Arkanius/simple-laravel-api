@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Domains\User\Repository\UserRepository;
 use App\Domains\User\Service\UserService;
+use App\Domains\Session\Service\SessionService;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -65,12 +66,17 @@ class UserController extends Controller
             return response()->json(['message' => $this->internalErrorMessage, 'data' => ''], 500);
         }
 
-        $emailService = new UserService();
-        $emailService->sendRegisterEmail($result);
+        $userService = new UserService();
+        $userService->sendRegisterEmail($result);
 
         return response()->json([
-            'message' => $this->resourceCreatedMessage,
+            'message' => $this->resourceCreatedMessage.'. An email was sent with your credentials',
             'data' => ''
         ], 200);
+    }
+
+    public function test(Request $request)
+    {
+        return SessionService::refreshToken($request->token);
     }
 }

@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Domains\User\Repository;
+namespace App\Domains\Session\Repository;
 
 use App\Domains\RepositoryInterface;
-use App\Domains\User\Model\User;
+use App\Domains\Session\Model\Session;
 use Webpatser\Uuid\Uuid;
 
-class UserRepository implements RepositoryInterface
+class SessionRepository implements RepositoryInterface
 {
+
     private $model;
-    private $apiSecretSize;
+    private $tokenSize;
 
     public function __construct()
     {
-        $this->model = new User;
-        $this->apiSecretSize = 50;
+        $this->model = new Session;
+        $this->tokenSize = 50;
     }
 
     /**
@@ -64,13 +65,10 @@ class UserRepository implements RepositoryInterface
         if (empty($data)) {
             return false;
         }
-
-        $data['id']           = Uuid::generate();
-        $data['password']     = app('hash')->make($data['password']);
-        $data['role']         = 'user';
-        $data['status']       = 1;
-        $data['api_key']      = str_random($this->apiSecretSize);
-        $data['api_secret']   = str_random($this->apiSecretSize);
+        $data['id']                = Uuid::generate();
+        $data['user_id']           = $data['id'];
+        $data['token']             = str_random($this->tokenSize);
+        $data['expiration_date']   = date('Y-m-d H:i:s', strtotime('+ 15 minutes'));
 
         return $this->model->create($data);
     }
@@ -87,6 +85,7 @@ class UserRepository implements RepositoryInterface
         if (empty($where) or empty($data)) {
             return false;
         }
+
         return $this->model->where($where)->update($data);
     }
 
@@ -109,16 +108,5 @@ class UserRepository implements RepositoryInterface
         }
 
         return $deleted->delete();
-    }
-
-    public function findUserBySecretAndKey($apiSecret, $apiKey)
-    {
-        if (empty($apiKey) or empty($apiSecret)) {
-            return false;
-        }
-
-        return $this->model->where(['api_secret' => $apiSecret])
-                        ->where(['api_key' => $apiKey])
-                        ->get();
     }
 }
