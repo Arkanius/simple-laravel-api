@@ -13,12 +13,13 @@ class SessionService
 
         $user = $sessionRepository->findBy('token', $token);
 
-        if (empty($user)) {
+        if ($user === false or empty($user)) {
             return response()->json([
                 'message' => 'Invalid token',
                 'data' => ''
             ], 401);
         }
+
 
         if ($user->expiration_date < date('Y-m-d H:i:s')) {
             $sessionRepository->delete($user->id);
@@ -30,7 +31,7 @@ class SessionService
 
         $sessionRepository->update(['id' => $user->id],
             [
-                'expiration_date' => date('Y-m-d H:i:s', strtotime('+ 5 minutes', strtotime($user->expiration_date)))
+                'expiration_date' => date('Y-m-d H:i:s', strtotime('+ 55 minutes', date('Y-m-d H:i:s')))
             ]);
 
 

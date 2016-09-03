@@ -201,8 +201,16 @@ class UserController extends Controller
         return response()->json(['message' => $this->resourceDeletedMessage, 'data' => ''], 200);
     }
 
-    public function show(Request $request)
+    /**
+     * Find user specified by id
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request, $id)
     {
+        SessionService::refreshToken($request->token);
+
         if (IdentifyService::isAdmin($request->token) === false) {
             return response()->json([
                 'message' => $this->hasNoPermissionMessage,
@@ -210,13 +218,46 @@ class UserController extends Controller
             ], 403);
         }
 
+        $users = $this->repository->findBy('id', $id);
+
+        if (empty($users)) {
+            return response()->json(['message' => $this->notFoundMessage, 'data' => ''], 422);
+        }
+
+        return response()->json([
+            'message' => '',
+            'result'  => $users
+        ], 200);
+
+    }
+
+    /**
+     * Show all deleted users
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleted(Request $request)
+    {
         SessionService::refreshToken($request->token);
+
+        if (IdentifyService::isAdmin($request->token) === false) {
+            return response()->json([
+                'message' => $this->hasNoPermissionMessage,
+                'data'  => ''
+            ], 403);
+        }
 
         return response()->json([
             'message' => '',
             'result'  => $this->repository->findUserStatus('0')
         ], 200);
 
+    }
+
+    public function test(Request $request)
+    {
+        return SessionService::refreshToken($request->token);
     }
 
 }

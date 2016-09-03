@@ -129,10 +129,19 @@ class UserRepository implements RepositoryInterface
                         ->get();
     }
 
+    /**
+     * Find user specified by status
+     *
+     * @param $status
+     * @param int $take
+     * @return mixed
+     */
     public function findUserStatus($status, $take = 15)
     {
         return $this->model
             ->where('status', $status)
             ->paginate($take);
     }
+
+
 }

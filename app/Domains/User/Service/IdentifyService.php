@@ -21,6 +21,7 @@ class IdentifyService
 
         $userId = $sessionRepository->findBy('token', $token);
 
+
         $userRole = $userRepository->findBy('id', $userId->user_id);
 
         if ($userRole->role == 'admin') {
