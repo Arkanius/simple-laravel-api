@@ -239,7 +239,11 @@ class UserController extends Controller
      */
     public function deleted(Request $request)
     {
-        SessionService::refreshToken($request->token);
+        $tokenStatus = SessionService::refreshToken($request->token);
+
+        if (!empty($tokenStatus)) {
+            return $tokenStatus;
+        }
 
         if (IdentifyService::isAdmin($request->token) === false) {
             return response()->json([
@@ -257,7 +261,12 @@ class UserController extends Controller
 
     public function test(Request $request)
     {
-        return SessionService::refreshToken($request->token);
+        $tokenStatus = SessionService::refreshToken($request->token);
+
+        if (!empty($tokenStatus)) {
+            return $tokenStatus;
+        }
+        return "test";
     }
 
 }
