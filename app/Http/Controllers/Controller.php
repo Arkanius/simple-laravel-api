@@ -11,4 +11,15 @@ use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 class Controller extends BaseController
 {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
+
+    protected $validationErrorMessage   = 'Invalid data, please check your fields';
+    protected $resourceCreatedMessage   = 'User created successfully';
+    protected $internalErrorMessage     = 'An error occurred please try again later';
+
+
+    public function __get($prop)
+    {
+        return $this->$prop;
+    }
+
 }

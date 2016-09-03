@@ -66,7 +66,7 @@ class UserController extends Controller
         }
 
         $emailService = new UserService();
-        $emailService->sendRegisterEmail([$request->email]);
+        $emailService->sendRegisterEmail($result);
 
         return response()->json([
             'message' => $this->resourceCreatedMessage,

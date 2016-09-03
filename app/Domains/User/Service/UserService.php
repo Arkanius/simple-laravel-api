@@ -2,7 +2,8 @@
 
 namespace App\Domains\User\Service;
 
-use Illuminate\Support\Facades\Mail;
+use Mail;
+use App\Domains\User\Model\User;
 
 class UserService
 {
@@ -13,28 +14,35 @@ class UserService
 
     public function __construct()
     {
-        $this->emailMessage = 'Test';
-        $this->emailSender = 'Test2';
-        $this->emailFrom = 'Test3';
-        $this->emailSubject = 'Test4';
+        $this->emailSender = 'Victor Gazotti';
+        $this->emailFrom = 'vtr.gomes@hotmail.com';
+        $this->emailSubject = 'Confirmação de cadastro';
     }
 
     /**
-     * Send email after register
+     * Send registration email
      *
-     * @param $emailData
+     * @param User $userData
      * @return bool
      */
-    public function sendRegisterEmail($emailData)
+    public function sendRegisterEmail(User $userData)
     {
-        if (empty($emailData)) {
+        if (empty($userData)) {
             return false;
         }
 
-        return Mail::raw($this->emailMessage, function($message) use ($emailData) {
+        $this->emailMessage = "Olá, $userData->name, o seu cadastro foi efetuado com sucesso!\n
+        Seguem os dados para acesso:\n
+        API_SECRET: $userData->api_secret\n
+        API_KEY: $userData->api_key
+        ";
+
+
+        Mail::raw($this->emailMessage, function($message) use ($userData) {
             $message->from($this->emailFrom, $this->emailSender);
-            $message->to($emailData['email'])->subject($this->emailSubject);
+            $message->to($userData->email)->subject($this->emailSubject);
         });
+
 
     }
 }
