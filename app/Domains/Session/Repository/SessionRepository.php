@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Domains\User\Repository;
+namespace App\Domains\Session\Repository;
 
 use App\Domains\RepositoryInterface;
-use App\Domains\User\Model\Session;
+use App\Domains\Session\Model\Session;
 use Webpatser\Uuid\Uuid;
 
 class SessionRepository implements RepositoryInterface
@@ -66,7 +66,7 @@ class SessionRepository implements RepositoryInterface
             return false;
         }
         $data['id']                = Uuid::generate();
-        $data['user_id']           = 'b9180dc0-71a2-11e6-8596-fb5b9d7d20b5'; // (string) $data['id'];
+        $data['user_id']           = $data['id'];
         $data['token']             = str_random($this->tokenSize);
         $data['expiration_date']   = date('Y-m-d H:i:s', strtotime('+ 15 minutes'));
 
@@ -85,6 +85,7 @@ class SessionRepository implements RepositoryInterface
         if (empty($where) or empty($data)) {
             return false;
         }
+
         return $this->model->where($where)->update($data);
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Domains\User\Repository\UserRepository;
-use App\Domains\User\Repository\SessionRepository;
+use App\Domains\Session\Repository\SessionRepository;
 use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller

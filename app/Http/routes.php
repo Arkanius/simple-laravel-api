@@ -21,6 +21,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('user', 'UserController@store');
     Route::post('authenticate', 'AuthenticationController@authenticate');
 
+    Route::get('test', 'UserController@test');
     //Route::resource('authenticate', 'AuthController', ['only' => ['index']]);
     //Route::post('authenticate', 'AuthController@authenticate');
 
