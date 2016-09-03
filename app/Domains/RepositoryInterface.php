@@ -11,7 +11,7 @@ interface RepositoryInterface
      * @param bool $paginate
      * @return mixed
      */
-    public function findAll($take = 15, $paginate = true);
+    public function findAll($take = 15, $paginate = true, array $token);
 
     /**
      * Find by "$atribute" equals to "$value"

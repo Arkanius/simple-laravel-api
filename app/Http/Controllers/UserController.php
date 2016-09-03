@@ -40,7 +40,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => '',
-            'result'  => $this->repository->findAll()
+            'result'  => $this->repository->findAll(15, true, ['value' => $request->token])
         ], 200);
     }
 
