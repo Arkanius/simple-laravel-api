@@ -11,4 +11,9 @@ class Session extends Model
     ];
 
     protected $keyType = 'char';
+
+    public function user()
+    {
+        return $this->belongsTo('App\Domains\User\Model\User');
+    }
 }
