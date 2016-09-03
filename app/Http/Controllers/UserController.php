@@ -69,7 +69,7 @@ class UserController extends Controller
         $emailService->sendRegisterEmail($result);
 
         return response()->json([
-            'message' => $this->resourceCreatedMessage,
+            'message' => $this->resourceCreatedMessage.'. An email was sent with your credentials',
             'data' => ''
         ], 200);
     }
