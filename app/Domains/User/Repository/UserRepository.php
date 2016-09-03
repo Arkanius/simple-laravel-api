@@ -110,4 +110,15 @@ class UserRepository implements RepositoryInterface
 
         return $deleted->delete();
     }
+
+    public function findBySecretAndKey($apiSecret, $apiKey)
+    {
+        if (empty($apiKey) or empty($apiSecret)) {
+            return false;
+        }
+
+        return $this->model->where(['api_secret' => $apiSecret])
+                        ->where(['api_key' => $apiKey])
+                        ->get();
+    }
 }
