@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Domains\User\Repository\UserRepository;
-use App\Domains\User\Service\UserService;
+use App\Domains\User\Repository\SessionRepository;
 use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
@@ -33,9 +33,9 @@ class AuthenticationController extends Controller
             ], 422);
         }
 
-        $result = $this->repository->findBySecretAndKey($request->api_secret, $request->api_key);
+        $user = $this->repository->findUserBySecretAndKey($request->api_secret, $request->api_key);
 
-        if (empty($result[0])) {
+        if (empty($user[0])) {
             if ($validator->fails()) {
                 return response()->json([
                     'message' => [
@@ -47,11 +47,22 @@ class AuthenticationController extends Controller
             }
         }
 
-        return response()->json([
-            'message' => '',
-            'data' => ['access_token' => str_random(50)]
-        ], 200);
+        $sessionRepository = new SessionRepository();
+        $result = $sessionRepository->create(['id' => $user[0]->id]);
 
+        if (!empty($result)) {
+            return response()->json([
+                'message' => $this->authSuccessMessage,
+                'data' => ['access_token' => $result->token]
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => [
+                $this->internalErrorMessage,
+            ],
+            'data' => ''
+        ], 500);
 
     }
 

@@ -3,18 +3,19 @@
 namespace App\Domains\User\Repository;
 
 use App\Domains\RepositoryInterface;
-use App\Domains\User\Model\User;
+use App\Domains\User\Model\Session;
 use Webpatser\Uuid\Uuid;
 
-class UserRepository implements RepositoryInterface
+class SessionRepository implements RepositoryInterface
 {
+
     private $model;
-    private $apiSecretSize;
+    private $tokenSize;
 
     public function __construct()
     {
-        $this->model = new User;
-        $this->apiSecretSize = 50;
+        $this->model = new Session;
+        $this->tokenSize = 50;
     }
 
     /**
@@ -64,13 +65,10 @@ class UserRepository implements RepositoryInterface
         if (empty($data)) {
             return false;
         }
-
-        $data['id']           = Uuid::generate();
-        $data['password']     = app('hash')->make($data['password']);
-        $data['role']         = 'user';
-        $data['status']       = 1;
-        $data['api_key']      = str_random($this->apiSecretSize);
-        $data['api_secret']   = str_random($this->apiSecretSize);
+        $data['id']                = Uuid::generate();
+        $data['user_id']           = 'b9180dc0-71a2-11e6-8596-fb5b9d7d20b5'; // (string) $data['id'];
+        $data['token']             = str_random($this->tokenSize);
+        $data['expiration_date']   = date('Y-m-d H:i:s');
 
         return $this->model->create($data);
     }
@@ -109,16 +107,5 @@ class UserRepository implements RepositoryInterface
         }
 
         return $deleted->delete();
-    }
-
-    public function findUserBySecretAndKey($apiSecret, $apiKey)
-    {
-        if (empty($apiKey) or empty($apiSecret)) {
-            return false;
-        }
-
-        return $this->model->where(['api_secret' => $apiSecret])
-                        ->where(['api_key' => $apiKey])
-                        ->get();
     }
 }

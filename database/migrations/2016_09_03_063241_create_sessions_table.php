@@ -14,10 +14,10 @@ class CreateSessionsTable extends Migration
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->uuid('id');
-            $table->string('user_id');
-            $table->foreign('state_id')->references('id')->on('users');
+            $table->uuid('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('token');
-            $table->dateTime('expiration_date');;
+            $table->dateTime('expiration_date');
             $table->timestamps();
             $table->primary('id');
         });
