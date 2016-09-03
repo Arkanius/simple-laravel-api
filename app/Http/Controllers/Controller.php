@@ -14,6 +14,8 @@ class Controller extends BaseController
 
     protected $validationErrorMessage    = 'Invalid data, please check your fields';
     protected $resourceCreatedMessage    = 'User created successfully';
+    protected $resourceUpdatedMessage    = 'User updated successfully';
+    protected $resourceDeletedMessage    = 'User deleted successfully';
     protected $internalErrorMessage      = 'An error occurred please try again later';
     protected $invalidCredentialsMessage = 'Invalid credentials';
     protected $authSuccessMessage        = 'User authenticated successfully';

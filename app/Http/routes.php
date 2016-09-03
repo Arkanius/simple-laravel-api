@@ -20,6 +20,8 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['prefix' => 'admin'], function () {
         Route::resource('users', 'UserController');
+        Route::put('users/{id}/suspend', 'UserController@suspendAccess');
+        Route::get('users/deleted', 'UserController@deleted');
     });
 
     Route::post('register', 'UserController@register');

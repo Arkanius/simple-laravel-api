@@ -111,6 +111,13 @@ class UserRepository implements RepositoryInterface
         return $deleted->delete();
     }
 
+    /**
+     * Find user
+     *
+     * @param $apiSecret
+     * @param $apiKey
+     * @return bool
+     */
     public function findUserBySecretAndKey($apiSecret, $apiKey)
     {
         if (empty($apiKey) or empty($apiSecret)) {
@@ -120,5 +127,12 @@ class UserRepository implements RepositoryInterface
         return $this->model->where(['api_secret' => $apiSecret])
                         ->where(['api_key' => $apiKey])
                         ->get();
+    }
+
+    public function findUserStatus($status, $take = 15)
+    {
+        return $this->model
+            ->where('status', $status)
+            ->paginate($take);
     }
 }

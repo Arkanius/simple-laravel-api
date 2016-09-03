@@ -36,6 +36,8 @@ class UserController extends Controller
             ], 403);
         }
 
+        SessionService::refreshToken($request->token);
+
         return response()->json([
             'message' => '',
             'result'  => $this->repository->findAll()
@@ -84,6 +86,13 @@ class UserController extends Controller
         ], 200);
     }
 
+    /**
+     * Update user
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request, $id)
     {
         if (IdentifyService::isAdmin($request->token) === false) {
@@ -93,9 +102,121 @@ class UserController extends Controller
             ], 403);
         }
 
+        SessionService::refreshToken($request->token);
+
         if (empty($this->repository->findBy('id', $id))) {
             return response()->json(['message' => $this->notFoundMessage, 'data' => ''], 422);
         }
+
+        $validator = Validator::make($request->all(), [
+            'name'           => 'required|max:255',
+            'email'          => 'required|email',
+            'password'       => 'required|max:50',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => [
+                    $this->validationErrorMessage,
+                    $validator->errors()
+                ],
+                'data' => ''
+            ], 422);
+        }
+
+        $data = [
+            'name'        => $request->name,
+            'email'       => $request->email,
+            'password'    => bcrypt($request->password),
+        ];
+
+        $result = $this->repository->update(['id' => $id], $data);
+
+        if (!$result or empty($result)) {
+            return response()->json(['message' => $this->internalErrorMessage, 'data' => ''], 500);
+        }
+
+        return response()->json(['message' => $this->resourceUpdatedMessage, 'data' => ''], 200);
+    }
+
+    /**
+     * Disable user access
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function suspendAccess(Request $request, $id)
+    {
+        if (IdentifyService::isAdmin($request->token) === false) {
+            return response()->json([
+                'message' => $this->hasNoPermissionMessage,
+                'data'  => ''
+            ], 403);
+        }
+
+        SessionService::refreshToken($request->token);
+
+        if (empty($this->repository->findBy('id', $id))) {
+            return response()->json(['message' => $this->notFoundMessage, 'data' => ''], 422);
+        }
+
+        $result = $this->repository->update(['id' => $id], ['status' => 2]);
+
+        if (!$result or empty($result)) {
+            return response()->json(['message' => $this->internalErrorMessage, 'data' => ''], 500);
+        }
+
+        return response()->json(['message' => $this->resourceUpdatedMessage, 'data' => ''], 200);
+    }
+
+    /**
+     * Delete user
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, $id)
+    {
+        if (IdentifyService::isAdmin($request->token) === false) {
+            return response()->json([
+                'message' => $this->hasNoPermissionMessage,
+                'data'  => ''
+            ], 403);
+        }
+
+        SessionService::refreshToken($request->token);
+
+        if (empty($this->repository->findBy('id', $id))) {
+            return response()->json(['message' => $this->notFoundMessage, 'data' => ''], 422);
+        }
+
+        $result = $this->repository->update(['id' => $id], ['status' => 0]);
+
+        if (!$result or empty($result)) {
+            return response()->json(['message' => $this->internalErrorMessage, 'data' => ''], 500);
+        }
+
+        return response()->json(['message' => $this->resourceDeletedMessage, 'data' => ''], 200);
+    }
+
+    public function show(Request $request)
+    {
+        if (IdentifyService::isAdmin($request->token) === false) {
+            return response()->json([
+                'message' => $this->hasNoPermissionMessage,
+                'data'  => ''
+            ], 403);
+        }
+
+        SessionService::refreshToken($request->token);
+
+        return response()->json([
+            'message' => '',
+            'result'  => $this->repository->findUserStatus('0')
+        ], 200);
+
     }
 
 }
