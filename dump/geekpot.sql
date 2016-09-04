@@ -1,5 +1,7 @@
 CREATE DATABASE geekpot;
 
+USE geekpot;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
