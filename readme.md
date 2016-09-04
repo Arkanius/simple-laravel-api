@@ -4,14 +4,14 @@
 ## Admin routes
     Just a API developed with Laravel Framework
 
-
+#### Get All Users
 * [Endpoint]  -   http://yourlocalhost.dev/v1/admin/users
 * [method] - GET
 * [Description] - If you are admin, you can see all the details of all users<br>
 * [user_type] -  admin
-> 
 
 
+#### Update User
 * [Endpoint]  -   http://yourlocalhost.dev/v1/admin/users/{userId}
 * [method] - PUT
 * [Description] - Method used to update all users data<br>
