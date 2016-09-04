@@ -1,21 +1,17 @@
 <?php
 
-namespace App\Domains\Session\Repository;
+namespace App\Domains\Lookup\Repository;
 
 use App\Domains\RepositoryInterface;
-use App\Domains\Session\Model\Session;
-use Webpatser\Uuid\Uuid;
+use App\Domains\Lookup\Model\Lookup;
 
-class SessionRepository implements RepositoryInterface
+class LookupRepository implements RepositoryInterface
 {
-
     private $model;
-    private $tokenSize;
 
     public function __construct()
     {
-        $this->model = new Session;
-        $this->tokenSize = 50;
+        $this->model = new Lookup;
     }
 
     /**
@@ -64,10 +60,6 @@ class SessionRepository implements RepositoryInterface
         if (empty($data)) {
             return false;
         }
-        $data['id']                = Uuid::generate();
-        $data['user_id']           = $data['user_id'];
-        $data['token']             = str_random($this->tokenSize);
-        $data['expiration_date']   = date('Y-m-d H:i:s', strtotime('+ 15 minutes'));
 
         return $this->model->create($data);
     }
@@ -107,5 +99,18 @@ class SessionRepository implements RepositoryInterface
         }
 
         return $deleted->delete();
+    }
+
+    /**
+     * @param $attribute
+     * @param $value
+     * @return bool
+     */
+    public function findAllBy($attribute, $value)
+    {
+        if (empty($attribute) or empty($value)) {
+            return false;
+        }
+        return $this->model->where($attribute, '=', $value)->get();
     }
 }
