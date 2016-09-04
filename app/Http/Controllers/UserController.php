@@ -243,7 +243,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => '',
-            'result'  => $users
+            'data'  => $users
         ], 200);
 
     }
