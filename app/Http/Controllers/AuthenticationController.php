@@ -35,22 +35,17 @@ class AuthenticationController extends Controller
 
         $user = $this->repository->findUserBySecretAndKey($request->api_secret, $request->api_key);
 
-        if (empty($user[0])) {
-            if ($validator->fails()) {
-                return response()->json([
-                    'message' => [
-                        $this->invalidCredentialsMessage,
-                        $validator->errors()
-                    ],
-                    'data' => ''
-                ], 401);
-            }
+        if ($user->isEmpty()) {
+            return response()->json([
+                'message' => $this->invalidCredentialsMessage,
+                'data' => ''
+            ], 401);
         }
 
         $sessionRepository = new SessionRepository();
         $result = $sessionRepository->create(['user_id' => $user[0]->id]);
 
-        if (!empty($result)) {
+        if (!$result or empty($result)) {
             return response()->json([
                 'message' => $this->authSuccessMessage,
                 'data' => ['access_token' => $result->token]
