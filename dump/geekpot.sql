@@ -1,17 +1,4 @@
-/*
-Navicat MySQL Data Transfer
-
-Source Server         : Localhost
-Source Server Version : 50711
-Source Host           : 127.0.0.1:3306
-Source Database       : geekpot
-
-Target Server Type    : MYSQL
-Target Server Version : 50711
-File Encoding         : 65001
-
-Date: 2016-09-03 22:49:00
-*/
+CREATE DATABASE geekpot;
 
 SET FOREIGN_KEY_CHECKS=0;
 
