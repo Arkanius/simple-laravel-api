@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Domains\User\Repository\UserRepository;
 use App\Domains\Session\Repository\SessionRepository;
+use App\Domains\Session\Service\SessionService;
 use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
@@ -42,23 +43,31 @@ class AuthenticationController extends Controller
             ], 401);
         }
 
-        $sessionRepository = new SessionRepository();
-        $result = $sessionRepository->create(['user_id' => $user[0]->id]);
+        $userToken = SessionService::verifyActiveSession($user[0]->id);
 
-        if (!$result or empty($result)) {
+        if ($userToken === false) {
+            $sessionRepository = new SessionRepository();
+            $result = $sessionRepository->create(['user_id' => $user[0]->id]);            
+
+            if (!empty($result)) {
+                return response()->json([
+                    'message' => $this->authSuccessMessage,
+                    'data' => ['access_token' => $result->token]
+                ], 200);
+            }
+
             return response()->json([
-                'message' => $this->authSuccessMessage,
-                'data' => ['access_token' => $result->token]
-            ], 200);
+                'message' => [
+                    $this->internalErrorMessage,
+                ],
+                'data' => ''
+            ], 500);
         }
 
         return response()->json([
-            'message' => [
-                $this->internalErrorMessage,
-            ],
-            'data' => ''
-        ], 500);
+                    'message' => $this->authSuccessMessage,
+                    'data' => ['access_token' => $userToken]
+                ], 200);  
 
     }
-
 }

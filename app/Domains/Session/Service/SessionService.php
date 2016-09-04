@@ -7,6 +7,12 @@ use App\Domains\Session\Repository\SessionRepository;
 class SessionService
 {
 
+    /**
+     * Refresh user Token
+     *
+     * @param string $token
+     * @return mix
+     */
     public static function refreshToken($token)
     {
         $sessionRepository = new SessionRepository();
@@ -49,7 +55,24 @@ class SessionService
         }
 
         $sessionRepository->update(['id' => $userToken->id], $data);
+    }
 
+    public static function verifyActiveSession($userId)
+    {
+        $sessionRepository = new SessionRepository();
+
+        $userToken = $sessionRepository->findBy('user_id', $userId);
+
+        if (!$userToken or empty($userToken)) {
+            return false;
+        }
+
+        if ($userToken->expiration_date > date('Y-m-d H:i:s')) {
+            return $userToken->token;
+        }
+
+        $sessionRepository->delete($userToken->id);
+        return false;
     }
 
 }
