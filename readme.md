@@ -9,7 +9,8 @@
 * [method] - GET
 * [Description] - If you are admin, you can see all the details of all users<br>
 * [user_type] -  admin
-\n\n\n
+> 
+
 
 * [Endpoint]  -   http://yourlocalhost.dev/v1/admin/users/{userId}
 * [method] - PUT
