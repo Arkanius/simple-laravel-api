@@ -9,31 +9,31 @@
 * [method] - GET
 * [Description] - If you are admin, you can see all the details of all users<br>
 * [user_type] -  admin
-
+<br>
 
 * [Endpoint]  -   http://yourlocalhost.dev/v1/admin/users/{userId}
 * [method] - PUT
 * [Description] - Method used to update all users data<br>
 * [user_type] -  admin
-
+<br>
 
 * [Endpoint]  -   http://yourlocalhost.dev/v1/admin/users/{id}/suspend
 * [method] - POST
 * [Description] - Method used to suspend some user. Status "2" is used to represent that the user is suspended<br>
 * [user_type] -  admin
-
+<br>
 
 * [Endpoint]  -   http://yourlocalhost.dev/v1/admin/users/{id}/
 * [method] - DELETE
 * [Description] - Method used to delete  some user. Status "0" is used to represent that the user was deleted<br>
 * [user_type] -  admin
-
+<br>
 
 * [Endpoint]  -   http://yourlocalhost.dev/v1/admin/users-deleted
 * [method] - GET
 * [Description] - Method used to list all deleted users
 * [user_type] -  admin
-
+<br>
  
 * [Endpoint]  -   http://yourlocalhost.dev/v1/admin/lookup
 * [method] - GET
