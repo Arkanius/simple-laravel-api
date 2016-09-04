@@ -11,11 +11,15 @@
 |
 */
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(App\Domains\User\Model\User::class, function (Faker\Generator $faker) {
     return [
+        'id' => Uuid::generate(),
         'name' => $faker->name,
         'email' => $faker->safeEmail,
+        'role' => 'user',
+        'api_secret' => str_random(50),
+        'api_key' => str_random(50),
+        'status' => rand(0, 2),
         'password' => bcrypt(str_random(10)),
-        'remember_token' => str_random(10),
     ];
 });

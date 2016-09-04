@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Domains\User\Repository\UserRepository;
+use App\Domains\Lookup\Repository\LookupRepository;
 use App\Domains\User\Service\UserService;
 use App\Domains\User\Service\IdentifyService;
 use App\Domains\Session\Service\SessionService;
@@ -40,7 +41,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => '',
-            'result'  => $this->repository->findAll()
+            'result'  => $this->repository->findAll(15, true, ['value' => $request->token])
         ], 200);
     }
 
@@ -95,14 +96,18 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $tokenStatus = SessionService::refreshToken($request->token);
+
+        if (!empty($tokenStatus)) {
+            return $tokenStatus;
+        }
+
         if (IdentifyService::isAdmin($request->token) === false) {
             return response()->json([
                 'message' => $this->hasNoPermissionMessage,
                 'data'  => ''
             ], 403);
         }
-
-        SessionService::refreshToken($request->token);
 
         if (empty($this->repository->findBy('id', $id))) {
             return response()->json(['message' => $this->notFoundMessage, 'data' => ''], 422);
@@ -148,14 +153,18 @@ class UserController extends Controller
      */
     public function suspendAccess(Request $request, $id)
     {
+        $tokenStatus = SessionService::refreshToken($request->token);
+
+        if (!empty($tokenStatus)) {
+            return $tokenStatus;
+        }
+
         if (IdentifyService::isAdmin($request->token) === false) {
             return response()->json([
                 'message' => $this->hasNoPermissionMessage,
                 'data'  => ''
             ], 403);
         }
-
-        SessionService::refreshToken($request->token);
 
         if (empty($this->repository->findBy('id', $id))) {
             return response()->json(['message' => $this->notFoundMessage, 'data' => ''], 422);
@@ -179,14 +188,18 @@ class UserController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        $tokenStatus = SessionService::refreshToken($request->token);
+
+        if (!empty($tokenStatus)) {
+            return $tokenStatus;
+        }
+
         if (IdentifyService::isAdmin($request->token) === false) {
             return response()->json([
                 'message' => $this->hasNoPermissionMessage,
                 'data'  => ''
             ], 403);
         }
-
-        SessionService::refreshToken($request->token);
 
         if (empty($this->repository->findBy('id', $id))) {
             return response()->json(['message' => $this->notFoundMessage, 'data' => ''], 422);
@@ -209,7 +222,11 @@ class UserController extends Controller
      */
     public function show(Request $request, $id)
     {
-        SessionService::refreshToken($request->token);
+        $tokenStatus = SessionService::refreshToken($request->token);
+
+        if (!empty($tokenStatus)) {
+            return $tokenStatus;
+        }
 
         if (IdentifyService::isAdmin($request->token) === false) {
             return response()->json([
@@ -256,17 +273,35 @@ class UserController extends Controller
             'message' => '',
             'result'  => $this->repository->findUserStatus('0')
         ], 200);
-
     }
 
-    public function test(Request $request)
+    /**
+     * Show all routes according to user role
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function lookup(Request $request)
     {
         $tokenStatus = SessionService::refreshToken($request->token);
 
         if (!empty($tokenStatus)) {
             return $tokenStatus;
         }
-        return "test";
+
+        $userType = 'admin';
+        if (IdentifyService::isAdmin($request->token) === false) {
+            $userType = 'user';
+        }
+
+        $routes = new LookupRepository();
+
+        return response()->json([
+            'message' => '',
+            'result'  => $routes->findAllBy('user_type', $userType)
+        ], 200);
+
+
     }
 
 }

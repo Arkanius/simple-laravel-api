@@ -18,18 +18,20 @@ class UserRepository implements RepositoryInterface
     }
 
     /**
-     * Find "$Take" resources
+     * Find all users
      *
      * @param int $take
      * @param bool $paginate
-     * @return mixed
+     * @param bool $token
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function findAll($take = 15, $paginate = true)
+    public function findAll($take = 15, $paginate = true, array $token)
     {
         if ($paginate === true) {
             return $this->model
                 ->query()
-                ->paginate($take);
+                ->paginate($take)
+                ->addQuery('token', $token['value']);
         }
         return $this->model
             ->query()

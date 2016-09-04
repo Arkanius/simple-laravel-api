@@ -20,15 +20,12 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['prefix' => 'admin'], function () {
         Route::resource('users', 'UserController');
-        Route::put('users/{id}/suspend', 'UserController@suspendAccess');
+        Route::post('users/{id}/suspend', 'UserController@suspendAccess');
         Route::get('users-deleted', 'UserController@deleted');
     });
 
     Route::post('register', 'UserController@register');
     Route::post('authenticate', 'AuthenticationController@authenticate');
-
-    Route::get('test', 'UserController@test');
-
-
+    Route::get('lookup', 'UserController@lookup');
 
 });
